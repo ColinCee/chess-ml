@@ -31,7 +31,7 @@ def main():
         test(test_dataloader, model, loss_fn, device)
     print("Done!")
 
-    torch.save(model.state_dict(), "model.pth")
+    torch.save(model.state_dict(), "tutorial_quickstart/model.pth")
     print("Saved PyTorch Model State to model.pth")
 
 
