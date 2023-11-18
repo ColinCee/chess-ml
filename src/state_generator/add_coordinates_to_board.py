@@ -43,7 +43,7 @@ for i in range(8):
                 (10, cell_height - 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
-                (0, 0, 0),
+                (255, 255, 255) if j % 2 == 0 else (0, 0, 0),
                 2,
             )
         if j == 7:
@@ -53,7 +53,7 @@ for i in range(8):
                 (cell_height - 30, 30),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
-                (0, 0, 0),
+                (255, 255, 255) if i % 2 == 0 else (0, 0, 0),
                 2,
             )
 
