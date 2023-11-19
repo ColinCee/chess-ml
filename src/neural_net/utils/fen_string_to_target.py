@@ -22,8 +22,8 @@ def fen_string_to_target_matrix(fen_string: str):
     # Split the FEN string and get the piece placement data
     placement = fen_string.split(" ")[0]
 
-    # Initialize a 64x13 matrix of zeros with boolean type
-    target = np.zeros((64, 13), dtype=np.bool_)
+    # Initialize a 64x13 matrix of zeros
+    target = np.zeros((64, 13), dtype=np.float32)
 
     # Row and column trackers for the board
     row, col = 0, 0
@@ -33,10 +33,10 @@ def fen_string_to_target_matrix(fen_string: str):
             row += 1
             col = 0
         elif char.isdigit():  # Empty squares
-            target[row * 8 + col : row * 8 + col + int(char), 12] = True
+            target[row * 8 + col : row * 8 + col + int(char), 12] = 1
             col += int(char)  # Increment column by the number of empty squares
         else:  # Piece
-            target[row * 8 + col, piece_to_index[char]] = True
+            target[row * 8 + col, piece_to_index[char]] = 1
             col += 1
 
     # Flatten the matrix to match the network output shape

@@ -15,7 +15,7 @@ class ChessboardFENNet(nn.Module):
         self.conv2 = nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2)
         # ... additional layers ...
         self.fc1 = nn.Linear(
-            64 * 56 * 56, 1000
+            64 * 64 * 64, 1000
         )  # Adjust the input features accordingly
         self.fc2 = nn.Linear(1000, 832)  # 64 squares * 13 classes
 
