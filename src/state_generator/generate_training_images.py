@@ -1,19 +1,33 @@
 from pathlib import Path
+from typing import List
 from fentoimage.board import BoardImage
+from PIL import Image
+
+from src.state_generator.utils.record_execution_time import record_execution_time
 
 
-def save_board_img_from_fen(fen: str, filename: str):
-    renderer = BoardImage(fen)
-    image = renderer.render()
-
+@record_execution_time
+def save_images(images: List[Image.Image]):
     output_path = Path(__file__).parent / "output" / "training_images"
     # Make dir if not exist
     output_path.mkdir(parents=True, exist_ok=True)
 
-    # Save pillow image to file
-    image.save(str(output_path / f"{filename}.png"))
+    # Create a multi-frame TIFF file
+    images[0].save(
+        str(output_path / "output.tiff"),
+        "TIFF",
+        save_all=True,
+        append_images=images[1:],
+        compression="tiff_lzw",
+    )
+
+    # print size of output.tiff
+    print(
+        f"Size of output.tiff: {Path(output_path / 'output.tiff').stat().st_size} bytes"
+    )
 
 
+@record_execution_time
 def get_training_fens() -> list[str]:
     # Load csv from ./lichess_db_puzzle.csv
     csv_path = Path(__file__).parent / "lichess_db_puzzle.csv"
@@ -23,25 +37,36 @@ def get_training_fens() -> list[str]:
     return fens
 
 
+@record_execution_time
+def save_fens(fens: list[str]):
+    output_path = Path(__file__).parent / "output" / "training_images"
+    # Make dir if not exist
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path / "_fens.txt", "w") as f:
+        f.write("\n".join(fens))
+
+
+@record_execution_time
 def generate_training_images(num_images_to_generate: int):
     fens = get_training_fens()
+    images: List[Image.Image] = []
     # for each fen in row, save board image
     for i, fen in enumerate(fens):
-        save_board_img_from_fen(fen, str(i))
-
         if i >= num_images_to_generate:
             break
 
-    # Save fens to a file as mapping from image to fen, maybe use json
-    fen_ouput_path = Path(__file__).parent / "output" / "training_images" / "_fens.txt"
-    with open(str(fen_ouput_path), "w") as f:
-        for fen in fens[:num_images_to_generate]:
-            f.write(fen + "\n")
+        renderer = BoardImage(fen)
+        images.append(renderer.render())
+
+    return images, fens
 
 
 def __main__():
-    num_images_to_generate = 1000
-    generate_training_images(num_images_to_generate)
+    num_images_to_generate = 10000
+    images, fens = generate_training_images(num_images_to_generate)
+    save_images(images)
+    save_fens(fens[:num_images_to_generate])
 
 
 if __name__ == "__main__":
