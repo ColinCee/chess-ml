@@ -60,9 +60,14 @@ def test_loop(dataloader, model, loss_fn):
     )
 
 
-device = torch.device("cuda")
+device = torch.device("cuda:0")
 model = ChessboardFENNet()
 model.to(device)
+
+# Assuming that we are on a CUDA machine, this should print a CUDA device:
+
+print(device)
+
 # Instantiate the dataset
 train_dataset = ChessboardDataset(
     (Path(__file__).parent / ".." / "state_generator" / "output" / "training_images")
@@ -72,15 +77,20 @@ test_dataset = ChessboardDataset(
 )
 
 # Instantiate the DataLoader
-train_dataloader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=4)
-test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=True, num_workers=4)
+batch_size = 16
+train_dataloader = DataLoader(
+    train_dataset, batch_size=batch_size, shuffle=True, num_workers=4
+)
+test_dataloader = DataLoader(
+    test_dataset, batch_size=batch_size, shuffle=True, num_workers=4
+)
 
 # Define loss function and optimizer
 loss_fn = nn.BCEWithLogitsLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 
-epochs = 10
+epochs = 20
 for t in range(epochs):
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader, model, loss_fn, optimizer)
