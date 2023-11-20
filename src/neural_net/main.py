@@ -87,7 +87,7 @@ test_dataloader = DataLoader(
 
 # Define loss function and optimizer
 loss_fn = nn.BCEWithLogitsLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 
 epochs = 20
