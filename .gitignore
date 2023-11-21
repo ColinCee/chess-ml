@@ -161,7 +161,6 @@ cython_debug/
 
 node_modules/
 data
-src/state_generator/output/training_images
-src/state_generator/output/testing_images
+*.png
 
 *.csv

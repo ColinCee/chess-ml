@@ -13,10 +13,10 @@ class ChessboardFENNet(nn.Module):
             nn.Conv2d(1, 32, kernel_size=5, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
-            nn.Conv2d(32, 64, kernel_size=7, padding=1),
+            nn.Conv2d(32, 64, kernel_size=5, padding=1),
             nn.ReLU(),
         )
-        self.linear_output = nn.Linear(968256, 8 * 8 * 13)
+        self.linear_output = nn.Linear(238144, 8 * 8 * 13)
 
     def forward(self, x):
         # Define the forward pass

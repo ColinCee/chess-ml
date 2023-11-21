@@ -69,12 +69,10 @@ model.to(device)
 print(device)
 
 # Instantiate the dataset
-train_dataset = ChessboardDataset(
-    (Path(__file__).parent / ".." / "state_generator" / "output" / "training_images")
-)
-test_dataset = ChessboardDataset(
-    (Path(__file__).parent / ".." / "state_generator" / "output" / "testing_images")
-)
+generator_path = Path(__file__).parent / ".." / "state_generator" / "output"
+transformer_path = Path(__file__).parent / "transforms"
+train_dataset = ChessboardDataset((generator_path / "training_images"))
+test_dataset = ChessboardDataset((generator_path / "testing_images"))
 
 # Instantiate the DataLoader
 batch_size = 16
