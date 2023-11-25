@@ -200,6 +200,21 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
+name = "drawsvg"
+version = "2.3.0"
+description = "A Python 3 library for programmatically generating SVG (vector) images and animations.  Drawsvg can also render to PNG, MP4, and display your drawings in Jupyter notebook and Jupyter lab."
+optional = false
+python-versions = "*"
+files = [
+    {file = "drawsvg-2.3.0-py3-none-any.whl", hash = "sha256:93ad2b465d0da0b98c4e2cde11b64ce0149e2f15f8cdc0bd8e68f8b30a2e0abf"},
+]
+
+[package.extras]
+all = ["cairoSVG (>=2.3,<3.0)", "imageio (>=2.5,<3.0)", "imageio-ffmpeg (>=0.4,<1.0)", "numpy (>=1.16,<2.0)", "pwkit (>=1.0,<2.0)"]
+color = ["numpy (>=1.16,<2.0)", "pwkit (>=1.0,<2.0)"]
+raster = ["cairoSVG (>=2.3,<3.0)", "imageio (>=2.5,<3.0)", "imageio-ffmpeg (>=0.4,<1.0)", "numpy (>=1.16,<2.0)"]
+
+[[package]]
 name = "fentoimage"
 version = "0.1.0"
 description = "Generate a chess board image given a FEN, à la Lichess style."
@@ -1200,4 +1215,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9571e7653de116db3258a6f8668ecc35684c0c044234e46b5e1b3c2479f88756"
+content-hash = "d0a2b9a65e0f5f85241936f180d2d984b597e4d51fa1fa2d17819c0e53b9ab4b"
