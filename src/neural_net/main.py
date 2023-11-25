@@ -1,12 +1,10 @@
 # Instantiate the network
 from pathlib import Path
-from src.neural_net.dataset import ChessboardDataset
+from src.neural_net.cell_dataset import CellDataset
 from src.neural_net.neural_net import ChessboardFENNet
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision.transforms as transforms
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 
 
 def train_loop(dataloader, model, loss_fn, optimizer):
@@ -51,7 +49,7 @@ def test_loop(dataloader, model, loss_fn):
 
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y.argmax(1)).type(torch.float).sum().item()
+            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
 
     test_loss /= num_batches
     correct /= size
@@ -69,10 +67,9 @@ model.to(device)
 print(device)
 
 # Instantiate the dataset
-generator_path = Path(__file__).parent / ".." / "state_generator" / "output"
-transformer_path = Path(__file__).parent / "transforms"
-train_dataset = ChessboardDataset((generator_path / "training_images"))
-test_dataset = ChessboardDataset((generator_path / "testing_images"))
+generator_path = Path(__file__).parent / ".." / "state_generator" / "single_cell_set"
+train_dataset = CellDataset((generator_path / "training_images"))
+test_dataset = CellDataset((generator_path / "testing_images"))
 
 # Instantiate the DataLoader
 batch_size = 16
@@ -84,7 +81,7 @@ test_dataloader = DataLoader(
 )
 
 # Define loss function and optimizer
-loss_fn = nn.BCEWithLogitsLoss()
+loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 
