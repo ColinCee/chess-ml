@@ -18,28 +18,21 @@ def create_cell_svg(background_color: str, piece: str):
     d = draw.Drawing(64, 64, origin=(0, 0))
     d.append(draw.Rectangle(0, 0, 64, 64, fill=background_color))
 
-    piece_size = 44  # Adjust as needed
+    piece_size = 64  # Adjust as needed
     piece_padding = (64 - piece_size) / 2
-    d.append(
-        draw.Image(
-            piece_padding,
-            piece_padding,
-            piece_size,
-            piece_size,
-            f"{pieces_path}/{piece}.svg",
-            embed=True,
-        )
+    image = draw.Image(
+        piece_padding,
+        piece_padding,
+        piece_size,
+        piece_size,
+        f"{pieces_path}/{piece}.svg",
+        embed=True,
     )
+    d.append(draw.Use(image, 0, 0, transform="scale(1.42222)"))
 
-    return d.as_svg()
+    return d.save_png(f"{output_path}/{piece}_{background_color}.png")
 
 
 for piece in pieces:
     for color in [light_square_color, dark_square_color]:
         svg = create_cell_svg(color, piece)
-        png = cairosvg.svg2png(bytestring=svg)
-        if not png:
-            raise Exception("png is empty")
-
-        image = Image.open(BytesIO(png))
-        image.save(f"{output_path}/{piece}_{color}.png")
