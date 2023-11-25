@@ -5,13 +5,16 @@ import cairosvg
 import drawsvg as draw
 
 
-light_square_color = "#f0d9b5"
-dark_square_color = "#b58863"
+# light_square_color = "#f0d9b5"
+# dark_square_color = "#b58863"
+
+light_square_color = "#ffffdd"
+dark_square_color = "#86a666"
 
 pieces = ["b", "k", "n", "p", "q", "r", "B", "K", "N", "P", "Q", "R"]
 
 pieces_path = Path(__file__).parent / "../piece-sets/lichess-standard/"
-output_path = Path(__file__).parent / "training_images"
+output_path = Path(__file__).parent / "testing_images"
 
 
 def create_cell_svg(background_color: str, piece: str | None = None):
