@@ -1,4 +1,5 @@
 # Instantiate the network
+from datetime import date, datetime
 from pathlib import Path
 from src.neural_net.cell_dataset import CellDataset
 from src.neural_net.neural_net import ChessboardFENNet
@@ -26,7 +27,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
-        if batch % 100 == 0:
+        if (batch / size) % 0.1 == 0:
             loss, current = loss.item(), (batch + 1) * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
@@ -72,7 +73,7 @@ train_dataset = CellDataset((generator_path / "training_images"))
 test_dataset = CellDataset((generator_path / "testing_images"))
 
 # Instantiate the DataLoader
-batch_size = 16
+batch_size = 4
 train_dataloader = DataLoader(
     train_dataset, batch_size=batch_size, shuffle=True, num_workers=4
 )
@@ -85,9 +86,17 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 
-epochs = 20
+epochs = 10
 for t in range(epochs):
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader, model, loss_fn, optimizer)
     test_loop(test_dataloader, model, loss_fn)
+
 print("Done!")
+
+model_path = Path(__file__).parent / "models"
+torch.save(
+    model.state_dict(),
+    f"{model_path}/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_model.pth",
+)
+print("Saved PyTorch Model State to model.pth")
