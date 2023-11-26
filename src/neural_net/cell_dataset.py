@@ -16,6 +16,7 @@ class CellDataset(Dataset):
                 v2.ToImage(),
                 v2.ToDtype(torch.float32, scale=True),
                 v2.Grayscale(num_output_channels=1),
+                v2.RandomResizedCrop(64, scale=(0.8, 1.0), ratio=(1, 1)),
             ]
         )
         self.image_path = image_path
@@ -23,19 +24,26 @@ class CellDataset(Dataset):
 
     def _load_dataset(self):
         dataset = []
-        for file in self.image_path.glob("*.png"):
-            piece_name = file.name.split("_")[0]
-            image = Image.open(file)
-
-            image = self.transform(image)
-            dataset.append({"image": image, "target": piece_to_target(piece_name)})
+        # for each subdir in the image path
+        for subdir in self.image_path.glob("*"):
+            for file in subdir.glob("*.png"):
+                piece_name = file.name.split("_")[0]
+                image = Image.open(file)
+                # Convert the image to RGB if it has more than 3 channels
+                if len(image.split()) > 3:
+                    image = image.convert("RGB")
+                    
+                image = self.transform(image)
+                # save to debug
+                debug_output_path = Path(__file__).parent / "debug"
+                v2.ToPILImage()(image).save(f"{debug_output_path}/{piece_name}.png")
+                dataset.append({"image": image, "target": piece_to_target(piece_name)})
 
         return dataset
 
     def __len__(self):
-        # 6 pieces, 2 colors, 2 sides
-        # Plus 2 for each empty background
-        return 6 * 2 * 2 + 2
+        print("Size of dataset is:", len(self.dataset))
+        return len(self.dataset)
 
     def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor]:
         # Get the image and target
