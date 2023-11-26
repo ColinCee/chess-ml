@@ -15,14 +15,15 @@ class CellDataset(Dataset):
             [
                 v2.ToImage(),
                 v2.ToDtype(torch.float32, scale=True),
-                v2.Grayscale(num_output_channels=1)
+                v2.Grayscale(num_output_channels=1),
+                v2.RandomResizedCrop(64, scale=(0.8, 1.0), ratio=(1, 1), antialias=True),
             ]
         )
         self.image_path = image_path
         self.dataset = self._load_dataset()
 
     def _load_dataset(self):
-        ignore_dirs = ["anarcandy", "horsey", "letter", "shapes", "reillycraig"]
+        ignore_dirs = ["anarcandy", "horsey", "letter", "shapes", "reillycraig", "disguised"]
         # ignore_dirs = []
         dataset = []
         # for each subdir in the image path
@@ -36,7 +37,6 @@ class CellDataset(Dataset):
                 if len(image.split()) > 3:
                     image = image.convert("RGB")
                     
-                image = self.transform(image)
                 # save to debug
                 debug_output_path = Path(__file__).parent / "debug"
                 v2.ToPILImage()(image).save(f"{debug_output_path}/{piece_name}.png")
@@ -51,6 +51,7 @@ class CellDataset(Dataset):
     def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor]:
         # Get the image and target
         image = self.dataset[idx]["image"]
+        image = self.transform(image)
         target = self.dataset[idx]["target"]
 
         return image, target

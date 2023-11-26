@@ -20,9 +20,7 @@ class ChessboardFENNet(nn.Module):
         )
         self.linear_output = nn.Sequential(
             nn.Linear(131072, 512),
-            nn.Dropout(p=0.5),
             nn.Linear(512, 128),
-            nn.Dropout(p=0.5),
             nn.Linear(128, 13)
         )
 

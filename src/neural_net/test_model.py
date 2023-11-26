@@ -1,27 +1,39 @@
 # load model and test
 
+import os
 from pathlib import Path
+import matplotlib
 import torch
+from src.neural_net.efficient_net_v2_model import get_efficient_net_v2_model
 from src.neural_net.neural_net import ChessboardFENNet
 from src.neural_net.utils.piece_to_target import piece_to_index
+import matplotlib.pyplot as plt
 
-model = ChessboardFENNet()
+matplotlib.use("TkAgg")
+# model = ChessboardFENNet()
+model = get_efficient_net_v2_model()
 model_path = Path(__file__).parent / "models"
-model_name = "2023-11-25_20-37-25_model.pth"
+model_name = "2023-11-26_17-09-06_100.0%_model.pth"
 model.load_state_dict(torch.load(f"{model_path}/{model_name}"))
 
 # Load test image and convert to tensor
 
-from torchvision.transforms import v2
+from torchvision.transforms import v2, Lambda
 from PIL import Image
 
+
+def remove_alpha(img):
+    return img.convert("RGB")
+
+
 test_image_path = (
-    Path(__file__).parent / "../state_generator/single_cell_set/testing_images/"
+    Path(__file__).parent / "../state_generator/single_cell_set/training_images/"
 )
 
-test_image = Image.open(test_image_path / "b_#86a666.png")
+test_image = Image.open(test_image_path / "anarcandy" / "b_#86a666.png")
 test_image = v2.Compose(
     [
+        Lambda(remove_alpha),
         v2.ToImage(),
         v2.ToDtype(torch.float32, scale=True),
         v2.Grayscale(num_output_channels=1),
@@ -30,8 +42,12 @@ test_image = v2.Compose(
 
 # Save test image for debugging
 debug_output_path = Path(__file__).parent / "debug"
-v2.ToPILImage()(test_image).save(f"{debug_output_path}/test_image.png")
-
+pil_image = v2.ToPILImage()(test_image)
+# Assuming pil_image is your PIL Image object
+plt.imshow(pil_image)
+# print the DISPLAY env var
+print("DISPLAY:", os.environ.get("DISPLAY"))
+plt.show()
 # Run the model on the test image
 
 model.eval()
