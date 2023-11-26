@@ -14,8 +14,8 @@ ruff = "^0.1.6"
 matplotlib = "^3.8.2"
 opencv-python = "^4.8.1.78"
 chess = "^1.10.0"
-fentoimage = "^0.1.0"
 drawsvg = "^2.3.0"
+pyvips = "^2.2.1"
 
 [[tool.poetry.packages]]
 include = "./src/chess-ml.py"
