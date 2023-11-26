@@ -15,17 +15,20 @@ class CellDataset(Dataset):
             [
                 v2.ToImage(),
                 v2.ToDtype(torch.float32, scale=True),
-                v2.Grayscale(num_output_channels=1),
-                v2.RandomResizedCrop(64, scale=(0.8, 1.0), ratio=(1, 1)),
+                v2.Grayscale(num_output_channels=1)
             ]
         )
         self.image_path = image_path
         self.dataset = self._load_dataset()
 
     def _load_dataset(self):
+        ignore_dirs = ["anarcandy", "horsey", "letter", "shapes", "reillycraig"]
+        # ignore_dirs = []
         dataset = []
         # for each subdir in the image path
         for subdir in self.image_path.glob("*"):
+            if subdir.name in ignore_dirs:
+                continue
             for file in subdir.glob("*.png"):
                 piece_name = file.name.split("_")[0]
                 image = Image.open(file)
